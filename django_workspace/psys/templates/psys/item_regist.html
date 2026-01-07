@@ -1,0 +1,25 @@
+{% extends 'psys/base.html' %}
+{% block content %}
+<h2>商品登録</h2>
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label>商品コード</label>
+        <input type="text" name="item_code" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>商品名</label>
+        <input type="text" name="item_name" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>単価</label>
+        <input type="number" name="price" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label>在庫数</label>
+        <input type="number" name="stock" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary">登録</button>
+    <a href="{% url 'item_list' %}" class="btn btn-secondary">一覧に戻る</a>
+</form>
+{% endblock %}

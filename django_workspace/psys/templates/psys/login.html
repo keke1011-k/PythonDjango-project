@@ -1,0 +1,20 @@
+{% extends 'psys/base.html' %}
+
+{% block content %}
+    <h2>ログイン</h2>
+    <form method="post" action="{% url 'login' %}" style="width: 300px; margin: 0 auto;">
+        {% csrf_token %}
+        <div>
+            <label for="employee_no">従業員番号:</label>
+            <input type="text" name="employee_no" id="employee_no" style="width: 100%;">
+        </div>
+        <div style="margin-top: 10px;">
+            <label for="password">パスワード:</label>
+            <input type="password" name="password" id="password" style="width: 100%;">
+        </div>
+        <div style="margin-top: 20px; text-align: center;">
+            <button type="submit">ログイン</button>
+            <a href="{% url 'index' %}"><button type="button">top</button></a>
+        </div>
+    </form>
+{% endblock %}

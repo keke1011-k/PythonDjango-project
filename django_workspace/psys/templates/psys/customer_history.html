@@ -1,0 +1,31 @@
+{% extends 'psys/base.html' %}
+{% block content %}
+<h2>{{ customer.customer_name }} 様の注文履歴</h2>
+
+<table class="table table-bordered">
+    <thead class="table-light">
+        <tr>
+            <th>注文番号</th>
+            <th>注文日</th>
+            <th>担当者番号</th>
+            <th>合計金額</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in order_list %}
+        <tr>
+            <td>{{ order.order_no }}</td>
+            <td>{{ order.order_date }}</td>
+            <td>{{ order.employee_no.employee_no }}</td> <td>¥{{ order.total_price }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">履歴はありません</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div style="margin-top: 20px;">
+    <a href="{% url 'customer_list' %}" class="btn btn-secondary">一覧に戻る</a>
+</div>
+{% endblock %}

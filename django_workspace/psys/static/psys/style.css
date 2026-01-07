@@ -1,0 +1,194 @@
+/* --- 基本設定 --- */
+body {
+    font-family: sans-serif;
+    background-color: #f0f4f8; /* 全体の背景色 */
+    margin: 0;
+    padding: 0;
+}
+
+/* --- ヘッダー --- */
+header {
+    background-color: #00FFFF; /* 設計書のヘッダー色 */
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #00cccc;
+}
+
+header h1 {
+    margin: 0;
+    color: #333;
+}
+
+nav.user-menu {
+    font-size: 0.9em;
+}
+nav.user-menu span {
+    margin-right: 15px;
+    font-weight: bold;
+}
+
+/* --- メインコンテンツ --- */
+main {
+    padding: 20px;
+}
+
+/* 設計書の白い枠 */
+.content-box {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 25px;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* ページタイトル */
+.content-box h2 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* --- 2カラムレイアウト --- */
+.content-wrapper {
+    display: flex;
+    gap: 30px; /* 左右の隙間 */
+}
+
+/* 左側サイドバー */
+.sidebar {
+    flex-basis: 180px; /* メニューの幅 */
+    flex-shrink: 0;
+}
+
+/* 右側メインコンテンツ */
+.main-content {
+    flex-grow: 1; /* 残りの幅すべて */
+    min-width: 0; /* flexアイテムの縮小対策 */
+}
+
+/* --- フォームとボタン --- */
+button, a > button {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 5px;
+    font-size: 14px;
+    background-color: #f0f0f0;
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    color: #333;
+}
+
+button:hover, a > button:hover {
+    background-color: #e0e0e0;
+    border-color: #888;
+}
+
+button:disabled {
+    background-color: #f9f9f9;
+    color: #bbb;
+    border-color: #ddd;
+}
+
+/* サイドバーのボタンは幅100%にする */
+.sidebar button, .sidebar a > button {
+    width: 100%;
+    box-sizing: border-box; /* 枠線を含めて100%にする */
+}
+
+/* フォームの入力欄 */
+input[type="text"], input[type="password"], input[type="number"] {
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    width: 250px;
+}
+
+/* 検索フォームのレイアウト用 */
+.search-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.search-form label {
+    font-weight: bold;
+}
+
+/* --- テーブル --- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 8px;
+    border: 1px solid #999;
+    text-align: left;
+    font-size: 14px;
+}
+
+th {
+    background-color: #f0f0f0;
+}
+
+/* 登録フォーム用のテーブル */
+table.form-table th {
+    width: 120px;
+}
+table.form-table td {
+    background-color: #fdfdfd; /* 入力欄の背景は白 */
+}
+table.form-table input {
+    width: 95%;
+}
+
+/* --- メッセージ --- */
+.messages {
+    max-width: 900px;
+    margin: 0 auto 15px auto;
+    list-style: none;
+    padding: 10px;
+    border: 1px solid;
+}
+.messages .success {
+    color: green;
+    border-color: green;
+    background-color: #e6ffe6;
+}
+.messages .error {
+    color: red;
+    border-color: red;
+    background-color: #ffe6e6;
+}
+.messages .info {
+    color: blue;
+    border-color: blue;
+    background-color: #e6e6ff;
+}
+
+/* 読み取り専用(read-only)の入力欄のスタイル */
+input:read-only {
+    background-color: #e6f7ff; /* うすい青色 */
+    border-color: #b0c4de;
+    color: #555;
+}
+
+/* 読み取り専用データセル（更新時の得意先コードなど） */
+.readonly-data {
+    background-color: #e6f7ff; /* うすい青色 */
+}
+/* ... (他のコード) ... */
+
+/* 読み取り専用データセル（更新時の得意先コードなど） */
+.readonly-data {
+    background-color: #e6f7ff; /* うすい青色 */
+}

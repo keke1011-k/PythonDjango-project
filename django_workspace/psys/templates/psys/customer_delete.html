@@ -1,0 +1,41 @@
+{% extends 'psys/base.html' %}
+
+{% block content %}
+    <h2>得意先削除</h2>
+    <div class="content-wrapper">
+        
+        <div class="sidebar">
+            <a href="{% url 'customer_management_menu' %}"><button>得意先管理メニュー</button></a>
+        </div>
+
+        <div class="main-content">
+            <form method="post" action="{% url 'customer_delete' %}" class="search-form">
+                {% csrf_token %}
+                <label for="customer_code">得意先コード:</label>
+                <input type="text" name="customer_code" id="customer_code" 
+                       value="{% if customer %}{{ customer.customer_code }}{% endif %}" {% if customer %}readonly{% endif %}>
+                <button type="submit" name="search">検索</button>
+            </form>
+
+            {% if customer %}
+            <h3>削除対象データ</h3>
+            <form method="post" action="{% url 'customer_delete' %}">
+                {% csrf_token %}
+                <input type="hidden" name="customer_code" value="{{ customer.customer_code }}">
+                
+                <table border="1">
+                    <tr><th>得意先コード</th><td>{{ customer.customer_code }}</td></tr>
+                    <tr><th>得意先名</th><td>{{ customer.customer_name }}</td></tr>
+                    <tr><th>電話番号</th><td>{{ customer.customer_telno }}</td></tr>
+                    <tr><th>郵便番号</th><td>{{ customer.customer_postalcode }}</td></tr>
+                    <tr><th>住所</th><td>{{ customer.customer_address }}</td></tr>
+                    <tr><th>割引率</th><td>{{ customer.discount_rate }}</td></tr>
+                </table>
+                <p style="color: red; font-weight: bold;">この得意先を削除します。よろしいですか？</p>
+                <button type="submit" name="delete">削除</button>
+                <a href="{% url 'customer_delete' %}"><button type="button" name="cancel">キャンセル</button></a>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'psys/base.html' %}
+
+{% block content %}
+    <h2>トップページ</h2>
+    <div style="text-align: center;">
+        <a href="{% url 'login' %}"><button>ログイン</button></a>
+        <button disabled>新規登録</button>
+    </div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'psys/base.html' %}
+
+{% block content %}
+    <h2>得意先管理メニュー</h2>
+    <div class="content-wrapper">
+        
+        <div class="sidebar">
+            <a href="{% url 'main_menu' %}"><button>管理メニュー</button></a>
+        </div>
+
+        <div class="main-content" style="text-align: center;">
+            <div><a href="{% url 'customer_list' %}"><button>得意先一覧</button></a></div>
+            <div><a href="{% url 'customer_search' %}"><button>得意先検索</button></a></div>
+            <div><a href="{% url 'customer_regist' %}"><button>得意先登録</button></a></div>
+            <div><a href="{% url 'customer_delete' %}"><button>得意先削除</button></a></div>
+            <div><a href="{% url 'customer_update' %}"><button>得意先更新</button></a></div>
+            </div>
+    </div>
+{% endblock %}

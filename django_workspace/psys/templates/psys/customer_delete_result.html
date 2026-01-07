@@ -1,0 +1,15 @@
+{% extends 'psys/base.html' %}
+
+{% block content %}
+    <h2>削除結果</h2>
+    <div class="content-wrapper">
+        
+        <div class="sidebar">
+            <a href="{% url 'customer_management_menu' %}"><button>得意先管理メニュー</button></a>
+        </div>
+
+        <div class="main-content">
+            <a href="{% url 'customer_delete' %}"><button type="button">戻る</button></a>
+        </div>
+    </div>
+{% endblock %}

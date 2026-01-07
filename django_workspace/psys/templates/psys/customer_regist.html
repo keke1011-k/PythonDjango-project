@@ -1,0 +1,52 @@
+{% extends 'psys/base.html' %}
+
+{% block content %}
+    <h2>得意先登録</h2>
+    <div class="content-wrapper">
+        
+        <div class="sidebar">
+            <a href="{% url 'customer_management_menu' %}"><button>得意先管理メニュー</button></a>
+        </div>
+
+        <div class="main-content">
+            {% if messages %}
+                {% for message in messages %}
+                    <h3 class="{{ message.tags }}">{{ message }}</h3>
+                {% endfor %}
+                <a href="{% url 'customer_regist' %}"><button type="button">戻る</button></a>
+            
+            {% else %}
+                <form method="post" action="{% url 'customer_regist' %}">
+                    {% csrf_token %}
+                    <table border="1" class="form-table">
+                        <tr>
+                            <th>得意先コード</th>
+                            <td><input type="text" name="customer_code" maxlength="6" required></td>
+                        </tr>
+                        <tr>
+                            <th>得意先名</th>
+                            <td><input type="text" name="customer_name" maxlength="20"></td>
+                        </tr>
+                        <tr>
+                            <th>電話番号</th>
+                            <td><input type="text" name="customer_telno" maxlength="13"></td>
+                        </tr>
+                        <tr>
+                            <th>郵便番号</th>
+                            <td><input type="text" name="customer_postalcode" maxlength="8"></td>
+                        </tr>
+                        <tr>
+                            <th>住所</th>
+                            <td><input type="text" name="customer_address" maxlength="40"></td>
+                        </tr>
+                        <tr>
+                            <th>割引率</th>
+                            <td><input type="number" name="discount_rate" min="0" max="99" value="0"></td>
+                        </tr>
+                    </table>
+                    <button type="submit" name="regist">登録</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

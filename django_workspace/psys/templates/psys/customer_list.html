@@ -1,0 +1,68 @@
+{% extends 'psys/base.html' %}
+
+{% block content %}
+    <h2>得意先一覧</h2>
+    <div class="content-wrapper">
+        
+        <div class="sidebar">
+            <a href="{% url 'customer_management_menu' %}"><button>得意先管理メニュー</button></a>
+        </div>
+
+        <div class="main-content">
+            
+            <form method="get" action="{% url 'customer_list' %}" class="search-form">
+                {% csrf_token %}
+                <label for="q">得意先名で検索:</label>
+                <input type="text" name="q" id="q" value="{{ query|default:'' }}">
+                <button type="submit">検索</button>
+                <a href="{% url 'customer_list' %}"><button type="button">クリア</button></a>
+            </form>
+
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>得意先コード</th>
+                        <th>得意先名</th>
+                        <th>電話番号</th>
+                        <th>郵便番号</th>
+                        <th>住所</th>
+                        <th>割引率</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in customer_list %}
+                    <tr>
+                        <td>{{ customer.customer_code }}</td>
+                        <td>
+                            <a href="{% url 'customer_history' customer.customer_code %}">
+                                {{ customer.customer_name }}
+                            </a>
+                        </td>
+                        <td>{{ customer.customer_telno }}</td>
+                        <td>{{ customer.customer_postalcode }}</td>
+                        
+                        <td>
+                            <a href="https://www.google.com/maps/search/?api=1&query={{ customer.customer_address }}" target="_blank" style="color: #0056b3; text-decoration: underline;">
+                                {{ customer.customer_address }} 📍
+                            </a>
+                        </td>
+                        <td>{{ customer.discount_rate }}</td>
+                    </tr>
+                    {% endfor %}
+                    
+                    {% if not customer_list %}
+                    <tr>
+                        <td colspan="6" style="text-align: center;">
+                            {% if query %}
+                                「{{ query }}」に一致する得意先は見つかりませんでした。
+                            {% else %}
+                                得意先データがありません。
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

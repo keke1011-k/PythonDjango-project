@@ -1,0 +1,58 @@
+{% extends 'psys/base.html' %}
+
+{% block content %}
+    <h2>得意先更新</h2>
+    <div class="content-wrapper">
+        
+        <div class="sidebar">
+            <a href="{% url 'customer_management_menu' %}"><button>得意先管理メニュー</button></a>
+        </div>
+
+        <div class="main-content">
+            <form method="post" action="{% url 'customer_update' %}" class="search-form">
+                {% csrf_token %}
+                <label for="customer_code">得意先コード:</label>
+                <input type="text" name="customer_code" id="customer_code" 
+                       value="{% if customer %}{{ customer.customer_code }}{% endif %}" {% if customer %}readonly{% endif %}>
+                <button type="submit" name="search">検索</button>
+            </form>
+
+            {% if customer %}
+            <h3>更新対象データ</h3>
+            <form method="post" action="{% url 'customer_update' %}">
+                {% csrf_token %}
+                <input type="hidden" name="customer_code" value="{{ customer.customer_code }}">
+                
+                <table border="1" class="form-table">
+                    <tr>
+                        <th>得意先コード</th>
+                        <td class="readonly-data">{{ customer.customer_code }}</td>
+                    </tr>
+                    <tr>
+                        <th>得意先名</th>
+                        <td><input type="text" name="customer_name" value="{{ customer.customer_name }}"></td>
+                    </tr>
+                    <tr>
+                        <th>電話番号</th>
+                        <td><input type="text" name="customer_telno" value="{{ customer.customer_telno }}"></td>
+                    </tr>
+                    <tr>
+                        <th>郵便番号</th>
+                        <td><input type="text" name="customer_postalcode" value="{{ customer.customer_postalcode }}"></td>
+                    </tr>
+                    <tr>
+                        <th>住所</th>
+                        <td><input type="text" name="customer_address" value="{{ customer.customer_address }}"></td>
+                    </tr>
+                    <tr>
+                        <th>割引率</th>
+                        <td><input type="number" name="discount_rate" value="{{ customer.discount_rate }}"></td>
+                    </tr>
+                </table>
+                <button type="submit" name="update">更新</button>
+                <a href="{% url 'customer_update' %}"><button type="button" name="cancel">キャンセル</button></a>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
