@@ -1,10 +1,9 @@
 {% extends 'psys/base.html' %}
 {% block content %}
 <h2>商品一覧</h2>
+
 <div style="margin-bottom: 20px;">
     <a href="{% url 'item_regist' %}" class="btn btn-primary">新規登録</a>
-    <a href="{% url 'item_update' %}" class="btn btn-success">更新</a>
-    <a href="{% url 'item_delete' %}" class="btn btn-danger">削除</a>
     <a href="{% url 'main_menu' %}" class="btn btn-secondary">メニューに戻る</a>
 </div>
 
@@ -15,6 +14,7 @@
             <th>商品名</th>
             <th>単価</th>
             <th>在庫数</th>
+            <th>操作</th>
         </tr>
     </thead>
     <tbody>
@@ -24,6 +24,11 @@
             <td>{{ item.item_name }}</td>
             <td>¥{{ item.price }}</td>
             <td>{{ item.stock }} 個</td>
+            
+            <td>
+                <a href="{% url 'item_delete' item.pk %}" class="btn btn-danger btn-sm">削除</a>
+            </td>
+            
         </tr>
         {% endfor %}
     </tbody>

@@ -1,10 +1,8 @@
 import csv
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.db import IntegrityError
 import datetime
-# 必要なモデルを全てインポート
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
+from django.contrib import messages
 from .models import Customer, Employee, Orders, Item
 
 # --- ログイン・メニュー関連 ---
@@ -41,14 +39,12 @@ def logout_view(request):
     return redirect('index')
 
 def main_menu(request):
-    """管理メニュー画面 (ダッシュボード機能付き)"""
+    """管理メニュー画面"""
     if 'login_user_id' not in request.session:
         return redirect('login')
     
-    # --- ダッシュボード集計 ---
-    # 有効な得意先数
+    # ダッシュボード集計
     customer_count = Customer.objects.filter(delete_flag=0).count()
-    # 総注文数
     try:
         order_count = Orders.objects.count()
     except:
@@ -60,13 +56,14 @@ def main_menu(request):
     }
     return render(request, 'psys/main_menu.html', context)
 
+
+# --- 得意先管理関連 ---
+
 def customer_management_menu(request):
-    """得意先管理メニュー画面"""
     if 'login_user_id' not in request.session:
         return redirect('login')
     return render(request, 'psys/customer_management_menu.html')
 
-# --- (1) 得意先検索 ---
 def customer_search(request):
     if 'login_user_id' not in request.session:
         return redirect('login')
@@ -80,7 +77,6 @@ def customer_search(request):
             messages.error(request, '該当する得意先コードは存在しません。')
     return render(request, 'psys/customer_search.html', context)
 
-# --- (2) 得意先一覧 ---
 def customer_list(request):
     if 'login_user_id' not in request.session:
         return redirect('login')
@@ -96,7 +92,6 @@ def customer_list(request):
     context = {'customer_list': customer_list, 'query': query}
     return render(request, 'psys/customer_list.html', context)
 
-# --- (3) 得意先登録 ---
 def customer_regist(request):
     if 'login_user_id' not in request.session:
         return redirect('login')
@@ -139,7 +134,6 @@ def customer_regist(request):
     else:
         return render(request, 'psys/customer_regist.html')
 
-# --- (4) 得意先更新 ---
 def customer_update(request):
     if 'login_user_id' not in request.session:
         return redirect('login')
@@ -170,7 +164,6 @@ def customer_update(request):
             return render(request, 'psys/customer_update_result.html', context)
     return render(request, 'psys/customer_update.html')
 
-# --- (5) 得意先削除 ---
 def customer_delete(request):
     if 'login_user_id' not in request.session:
         return redirect('login')
@@ -195,7 +188,6 @@ def customer_delete(request):
             return render(request, 'psys/customer_delete_result.html')
     return render(request, 'psys/customer_delete.html')
 
-# --- (6) 注文履歴 (詳細画面) ---
 def customer_history(request, code):
     if 'login_user_id' not in request.session:
         return redirect('login')
@@ -203,7 +195,6 @@ def customer_history(request, code):
     try:
         customer = Customer.objects.get(customer_code=code, delete_flag=0)
         context['customer'] = customer
-        # 注文履歴を取得
         order_list = Orders.objects.filter(customer_code=customer).order_by('-order_date')
         context['order_list'] = order_list
     except Customer.DoesNotExist:
@@ -211,7 +202,6 @@ def customer_history(request, code):
         return redirect('customer_list')
     return render(request, 'psys/customer_history.html', context)
 
-# --- (7) CSVエクスポート ---
 def customer_export(request):
     if 'login_user_id' not in request.session:
         return redirect('login')
@@ -224,17 +214,15 @@ def customer_export(request):
         writer.writerow([c.customer_code, c.customer_name, c.customer_telno, c.customer_postalcode, c.customer_address, c.discount_rate])
     return response
 
-# （↑これまでのコードの一番下に追加してください）
 
-# --- 商品一覧 ---
+# --- 商品管理関連 (IDを受け取る形に修正済み) ---
+
 def item_list(request):
     if 'login_user_id' not in request.session:
         return redirect('login')
-    
     items = Item.objects.all().order_by('item_code')
     return render(request, 'psys/item_list.html', {'items': items})
 
-# --- 商品登録 ---
 def item_regist(request):
     if 'login_user_id' not in request.session:
         return redirect('login')
@@ -246,7 +234,6 @@ def item_regist(request):
         stock = request.POST.get('stock')
 
         try:
-            # 重複チェック
             if Item.objects.filter(item_code=code).exists():
                 messages.error(request, f'商品コード「{code}」は既に登録されています。')
             else:
@@ -263,85 +250,57 @@ def item_regist(request):
 
     return render(request, 'psys/item_regist.html')
 
-# --- 商品更新 ---
-def item_update(request):
+def item_update(request, pk):
+    """商品更新 (URLのIDを使用)"""
     if 'login_user_id' not in request.session:
         return redirect('login')
 
-    context = {}
+    # URLのID(pk)を使って商品を検索
+    item = get_object_or_404(Item, pk=pk)
+
     if request.method == 'POST':
-        if 'search' in request.POST:
-            code = request.POST.get('item_code')
-            try:
-                item = Item.objects.get(item_code=code)
-                context['item'] = item
-            except Item.DoesNotExist:
-                messages.error(request, '該当する商品コードが見つかりません。')
-        
-        elif 'update' in request.POST:
-            code = request.POST.get('item_code')
-            try:
-                item = Item.objects.get(item_code=code)
-                item.item_name = request.POST.get('item_name')
-                item.price = int(request.POST.get('price'))
-                item.stock = int(request.POST.get('stock'))
-                item.save()
-                messages.success(request, '商品情報を更新しました。')
-                context['item'] = item
-            except Exception:
-                messages.error(request, '更新に失敗しました。')
+        try:
+            item.item_name = request.POST.get('item_name')
+            item.price = int(request.POST.get('price'))
+            item.stock = int(request.POST.get('stock'))
+            item.save()
+            messages.success(request, '商品情報を更新しました。')
+            return redirect('item_list') # 更新後は一覧に戻る
+        except Exception:
+            messages.error(request, '更新に失敗しました。')
+    
+    return render(request, 'psys/item_update.html', {'item': item})
 
-    return render(request, 'psys/item_update.html', context)
-
-# --- 商品削除 ---
-def item_delete(request):
+def item_delete(request, pk):
+    """商品削除 (URLのIDを使用)"""
     if 'login_user_id' not in request.session:
         return redirect('login')
 
-    context = {}
+    # URLのID(pk)を使って商品を検索
+    item = get_object_or_404(Item, pk=pk)
+
     if request.method == 'POST':
-        if 'search' in request.POST:
-            code = request.POST.get('item_code')
-            try:
-                item = Item.objects.get(item_code=code)
-                context['item'] = item
-            except Item.DoesNotExist:
-                messages.error(request, '該当する商品コードが見つかりません。')
-        
-        elif 'delete' in request.POST:
-            code = request.POST.get('item_code')
-            try:
-                # 商品は物理削除（完全に消す）します
-                item = Item.objects.get(item_code=code)
-                item.delete()
-                messages.success(request, '商品を削除しました。')
-            except Exception:
-                messages.error(request, '削除に失敗しました。')
+        try:
+            item.delete()
+            messages.success(request, '商品を削除しました。')
+            return redirect('item_list') # 削除後は一覧に戻る
+        except Exception:
+            messages.error(request, '削除に失敗しました。')
+    
+    return render(request, 'psys/item_delete.html', {'item': item})
 
-    return render(request, 'psys/item_delete.html', context)
 
-# --- 注文登録 ---
-def order_entry(request):
-    if 'login_user_id' not in request.session:
-        return redirect('login')
-   
-# （↑これまでのコードの下に追加）
-
-# ==========================================================
-# 注文登録機能 (Order Entry) - ラスボス機能
-# ==========================================================
-import datetime # 日付を扱うために必要
+# --- 注文管理関連 ---
 
 def order_entry(request):
     if 'login_user_id' not in request.session:
         return redirect('login')
 
-    # GET時の処理：登録画面を表示
-    # 得意先と商品のリストを準備して、画面に渡す
+    # 画面表示用データ
     context = {
         'customers': Customer.objects.filter(delete_flag=0),
         'items': Item.objects.all(),
-        'today': datetime.date.today().strftime('%Y-%m-%d') # 今日の日付
+        'today': datetime.date.today().strftime('%Y-%m-%d')
     }
 
     if request.method == 'POST':
@@ -352,51 +311,41 @@ def order_entry(request):
         deliver_date = request.POST.get('deliver_date')
 
         try:
-            # 1. 注文番号を自動生成する (一番大きい番号 + 1)
+            # 1. 注文番号自動生成
             last_order = Orders.objects.order_by('-order_no').first()
             if last_order:
-                # '000001' -> 1 にして +1 -> 2 -> '000002' に戻す
                 new_no = int(last_order.order_no) + 1
                 new_order_no = f"{new_no:06d}"
             else:
                 new_order_no = "000001"
 
-            # 2. 金額を計算する (単価 × 個数)
+            # 2. 必要なデータを取得・計算
             item = Item.objects.get(item_code=item_code)
             total_price = item.price * int(quantity)
-
-            # 3. 担当者（ログイン中の人）を取得
             employee = Employee.objects.get(employee_no=request.session['login_user_id'])
-            
-            # 4. 得意先データを取得
             customer = Customer.objects.get(customer_code=customer_code)
 
-            # 5. 保存！
+            # 3. 保存
             new_order = Orders(
                 order_no=new_order_no,
-                customer_code=customer,     # 誰が？
-                employee_no=employee,       # 担当者は？
-                total_price=total_price,    # 合計いくら？
-                detail_num=int(quantity),   # 何個？
+                customer_code=customer,
+                employee_no=employee,
+                total_price=total_price,
+                detail_num=int(quantity),
                 order_date=order_date,
                 deliver_date=deliver_date
             )
             new_order.save()
-            
             messages.success(request, f'注文を登録しました！ 合計金額: ¥{total_price}')
             
         except Exception as e:
-            # エラーが起きたら画面に表示
             messages.error(request, f'登録に失敗しました... エラー: {e}')
 
     return render(request, 'psys/order_entry.html', context)
 
-# --- 総注文履歴 ---
 def order_list(request):
     if 'login_user_id' not in request.session:
         return redirect('login')
     
     orders = Orders.objects.all().order_by('-order_date')
-
-    return render(request,'psys/order_list.html', {'orders': orders})
-
+    return render(request, 'psys/order_list.html', {'orders': orders})

@@ -1,0 +1,29 @@
+{% extends 'psys/base.html' %}
+
+{% block content %}
+<div class="container" style="margin-top: 30px;">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">削除の確認</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h5 class="alert-heading">本当に削除しますか？</h5>
+                        <p>この操作は取り消せません。</p>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="javascript:history.back()" class="btn btn-secondary me-md-2">キャンセル</a>
+                            <button type="submit" class="btn btn-danger">本当に削除する</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

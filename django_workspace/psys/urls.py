@@ -25,14 +25,15 @@ urlpatterns = [
     # CSVダウンロード
     path('customer_export/', views.customer_export, name='customer_export'),
 
-    #商品管理機能
+    # 商品管理機能
     path('item_list/', views.item_list, name='item_list'),
     path('item_regist/', views.item_regist, name='item_regist'),
-    path('item_update/', views.item_update, name='item_update'),
-    path('item_delete/', views.item_delete, name='item_delete'),
+    # ★ここを修正しました！ (<str:pk> を追加)
+    path('item_update/<str:pk>/', views.item_update, name='item_update'),
+    path('item_delete/<str:pk>/', views.item_delete, name='item_delete'),
 
     # 注文管理機能
     path('order_entry/',views.order_entry, name='order_entry'),
-    #　総注文履歴
+    # 総注文履歴
     path('order_list/',views.order_list, name='order_list'),
 ]

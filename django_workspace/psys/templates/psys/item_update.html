@@ -1,0 +1,28 @@
+{% extends 'psys/base.html' %}
+
+{% block content %}
+<div class="container" style="margin-top: 30px;">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">商品情報の編集</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <table class="table">
+                            {{ form.as_table }}
+                        </table>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="javascript:history.back()" class="btn btn-secondary me-md-2">キャンセル</a>
+                            <button type="submit" class="btn btn-primary">更新する</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
